@@ -1,0 +1,5 @@
+.env
+api/vendor/
+cms/extensions/vendor/
+api/php_error_log
+cms/php_error_log
