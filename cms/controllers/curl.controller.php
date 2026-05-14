@@ -69,4 +69,35 @@ class CurlController{
 
 	}
 
+	/*=============================================
+	Peticiones a la API de WhatsApp
+	=============================================*/	
+
+	static public function apiWS($json, $getApiWS){
+
+		$curl = curl_init();
+
+		curl_setopt_array($curl, array(
+			CURLOPT_URL => 'https://graph.facebook.com/v25.0/'.$getApiWS->id_number_whatsapp.'/messages',
+			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_ENCODING => '',
+			CURLOPT_MAXREDIRS => 10,
+			CURLOPT_TIMEOUT => 0,
+			CURLOPT_FOLLOWLOCATION => true,
+			CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+			CURLOPT_CUSTOMREQUEST => 'POST',
+			CURLOPT_POSTFIELDS => $json,
+			CURLOPT_HTTPHEADER => array(
+				'Authorization: Bearer '.$getApiWS->token_whatsapp,
+				'Content-Type: application/json'
+			),
+		));
+
+		$response = curl_exec($curl);
+
+		curl_close($curl);
+		$response = json_decode($response);
+		return $response;
+
+	}
 }

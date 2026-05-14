@@ -19,12 +19,15 @@ $dotenv = Dotenv\Dotenv::createImmutable(__DIR__.'/../../');
 $dotenv->load();
 
 require_once "../controllers/curl.controller.php";
+require_once "../controllers/clients.controller.php";
+require_once "../controllers/bots.controller.php";
 
 /*=============================================
 Simulación del contenido JSON
 =============================================*/
 
-$input = '{"object":"whatsapp_business_account","entry":[{"id":"952399544271620","changes":[{"value":{"messaging_product":"whatsapp","metadata":{"display_phone_number":"15556393799","phone_number_id":"1025723653965602"},"contacts":[{"profile":{"name":"Carlos Polanco"},"wa_id":"51920155032","user_id":"PE.967744529547245"}],"messages":[{"from":"51920155032","from_user_id":"PE.967744529547245","id":"wamid.HBgLNTE5MjAxNTUwMzIVAgASGCBBQ0Y5NUJBQkZDRkJDM0NCMjdCNDk4MDQwRjhFRkJGNgA=","timestamp":"1778766865","type":"image","image":{"caption":"Hola quiero un caf\u00e9","mime_type":"image\/jpeg","sha256":"HCaHabZ6gVq4V\/SPmMzBTWkoEUI8NgjfVshSveeWM3c=","id":"27251809591111687","url":"https:\/\/lookaside.fbsbx.com\/whatsapp_business\/attachments\/?mid=27251809591111687&source=webhook&ext=1778767167&hash=ARkmzY3OC-p0F9jJeqlf0KxeMiqXaSp1p4Om4x3WbooRFw"}}]},"field":"messages"}]}]}';
+$input = '{"object":"whatsapp_business_account","entry":[{"id":"952399544271620","changes":[{"value":{"messaging_product":"whatsapp","metadata":{"display_phone_number":"15556393799","phone_number_id":"1025723653965602"},"contacts":[{"profile":{"name":"Carlos Polanco"},"wa_id":"51920155032","user_id":"PE.967744529547245"}],"messages":[{"from":"51920155032","from_user_id":"PE.967744529547245","id":"wamid.HBgLNTE5MjAxNTUwMzIVAgASGCBBQzNCNzUxQkRDOUUzNjQ1QTQxODMwQzhCOTc4MkE3OAA=","timestamp":"1778775735","text":{"body":"Hola"},"type":"text"}]},"field":"messages"}]}]}
+';
 
 /*=============================================
 Convierte el contenido JSON a un array asociativo
@@ -32,7 +35,9 @@ Convierte el contenido JSON a un array asociativo
 
 
 $data = json_decode($input);
-echo '<pre>'; print_r($data); echo '</pre>';
+// echo '<pre>'; print_r($data); echo '</pre>';
+
+// return
 
 /*=============================================
 Variables
@@ -43,6 +48,8 @@ $id_whatsapp_message = null;
 $client_message = null;
 $phone_message = null;
 $order_message = 0;
+$type_conversation = null;
+
 
 /*=============================================
 Tipo de mensajes
@@ -71,12 +78,10 @@ $getApiWS = CurlController::request($url, $method, $fields);
 if($getApiWS->status == 200){
 
     $getApiWS = $getApiWS->results[0];
-    $id_whatsapp = $getApiWS->id_whatsapp;
     $id_whatsapp_message = $getApiWS->id_whatsapp;
-
 }
 
-echo '<pre>$getApiWS '; print_r($getApiWS); echo '</pre>';
+echo '<pre>$id_whatsapp_message '; print_r($id_whatsapp_message); echo '</pre>';
 
 /*=============================================
 Capturar mensaje del cliente
@@ -85,9 +90,14 @@ if($type_message == "client"){
 
     $phone_message = $data->entry[0]->changes[0]->value->messages[0]->from;
 
+    /*=============================================
+    Capturando texto
+    =============================================*/
     if(isset($data->entry[0]->changes[0]->value->messages[0]->text)){
     $client_message = $data->entry[0]->changes[0]->value->messages[0]->text->body;
+    $type_conversation = "text";
     }
+
 
     /*=============================================
     Capturando un imagen
@@ -99,6 +109,7 @@ if($type_message == "client"){
                 $caption = "";
             }
     $client_message = '{"type":"image","mime":"'. $data->entry[0]->changes[0]->value->messages[0]->image->mime_type .'", "id":"'. $data->entry[0]->changes[0]->value->messages[0]->image->id .'", "caption":"'. $caption .'"}';
+    $type_conversation = "image";
     }
 
     /*=============================================
@@ -112,6 +123,7 @@ if($type_message == "client"){
                 $caption = "";
             }
     $client_message = '{"type":"video","mime":"'. $data->entry[0]->changes[0]->value->messages[0]->video->mime_type .'", "id":"'. $data->entry[0]->changes[0]->value->messages[0]->video->id .'", "caption":"'. $caption .'"}';
+    $type_conversation = "video";
     }
 
     /*=============================================
@@ -121,6 +133,7 @@ if($type_message == "client"){
     if(isset($data->entry[0]->changes[0]->value->messages[0]->audio)){
             
     $client_message = '{"type":"audio","mime":"'. $data->entry[0]->changes[0]->value->messages[0]->audio->mime_type .'", "id":"'. $data->entry[0]->changes[0]->value->messages[0]->audio->id .'"}';
+    $type_conversation = "audio";
     }
 
     /*=============================================
@@ -134,11 +147,16 @@ if($type_message == "client"){
                 $caption = "";
             }
     $client_message = '{"type":"document","mime":"'. $data->entry[0]->changes[0]->value->messages[0]->document->mime_type .'", "id":"'. $data->entry[0]->changes[0]->value->messages[0]->document->id .'", "caption":"'. $caption .'"}';
+    $type_conversation = "document";
     }
 
     echo '<pre>$client_message '; print_r($client_message); echo '</pre>';
     echo '<pre>$phone_message '; print_r($phone_message); echo '</pre>';
 
+
+    /*=============================================
+    Capturar el orden del mensaje
+    =============================================*/
 
     $url = "messages?linkTo=phone_message&equalTo=".$phone_message."&startAt=0&endAt=1&orderBy=id_message&orderMode=DESC";
 
@@ -149,6 +167,10 @@ if($type_message == "client"){
         $order_message = $getMessages->results[0]->order_message + 1;
     }
 
+
+    /* =============================================
+    Guardar mensaje del negocio
+    =============================================*/
     $url = "messages?token=no&except=id_message";
     $method = "POST";
     $fields = array(
@@ -160,7 +182,18 @@ if($type_message == "client"){
         "date_created_message" => date("Y-m-d"),
     );
 
-    $createMessage = CurlController::request($url, $method, $fields);
-    echo '<pre>$createMessage '; print_r($createMessage); echo '</pre>';
+    $saveMessage = CurlController::request($url, $method, $fields);
 
+
+    if($saveMessage->status == 200){
+
+        /*=============================================
+        Respuesta al cliente
+        =============================================*/
+
+        $responseClients = ClientsController::responseClients($getApiWS, $phone_message, $order_message, $type_conversation);
+
+        echo '<pre>$responseClients '; print_r($responseClients); echo '</pre>';
+
+    }
 }
