@@ -1,0 +1,123 @@
+[
+  /* MENSAJE TIPO PLANTILLA */
+  {
+    "messaging_product": "whatsapp",
+    "to": "51920155032",
+    "type": "template",
+    "template": {
+      "name": "hello_world",
+      "language": {
+        "code": "en_US"
+      }
+    }
+  },
+
+  /* MENSAJE TIPO TEXTO */
+  {
+    "messaging_product": "whatsapp",
+    "recipient_type": "individual",
+    "to": "51920155032",
+    "type": "text",
+    "text": {
+      "preview_url": false,
+      "body": "Hola, este es un mensaje de prueba"
+    }
+  },
+
+  /* MENSAJE TIPO INTERACTIVO - LISTA */
+  {
+    "messaging_product": "whatsapp",
+    "recipient_type": "individual",
+    "to": "51920155032",
+    "type": "interactive",
+    "interactive": {
+      "type": "list",
+      "header": {
+        "type": "text",
+        "text": "Título del encabezado"
+      },
+      "body": {
+        "text": "Descripción del mensaje. Selecciona una opción de la lista."
+      },
+      "footer": {
+        "text": "Pie de página opcional"
+      },
+      "action": {
+        "button": "Ver opciones",
+        "sections": [
+          {
+            "title": "Sección 1",
+            "rows": [
+              {
+                "id": "opcion_1",
+                "title": "Opción 1",
+                "description": "Descripción de la opción 1"
+              },
+              {
+                "id": "opcion_2",
+                "title": "Opción 2",
+                "description": "Descripción de la opción 2"
+              }
+            ]
+          },
+          {
+            "title": "Sección 2",
+            "rows": [
+              {
+                "id": "opcion_3",
+                "title": "Opción 3",
+                "description": "Descripción de la opción 3"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+
+  /* MENSAJE TIPO INTERACTIVO - BOTONES */
+  {
+    "messaging_product": "whatsapp",
+    "recipient_type": "individual",
+    "to": "51920155032",
+    "type": "interactive",
+    "interactive": {
+      "type": "button",
+      "header": {
+        "type": "text",
+        "text": "Título del encabezado"
+      },
+      "body": {
+        "text": "¿Qué deseas hacer? Selecciona una opción."
+      },
+      "footer": {
+        "text": "Pie de página opcional"
+      },
+      "action": {
+        "buttons": [
+          {
+            "type": "reply",
+            "reply": {
+              "id": "btn_1",
+              "title": "Sí"
+            }
+          },
+          {
+            "type": "reply",
+            "reply": {
+              "id": "btn_2",
+              "title": "No"
+            }
+          },
+          {
+            "type": "reply",
+            "reply": {
+              "id": "btn_3",
+              "title": "Más información"
+            }
+          }
+        ]
+      }
+    }
+  }
+]

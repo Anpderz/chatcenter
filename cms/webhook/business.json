@@ -1,0 +1,91 @@
+/* 
+    JSON CLIENTE PARTE 1
+*/
+
+{
+  "object": "whatsapp_business_account",
+  "entry": [
+    {
+      "id": "952399544271620",
+      "changes": [
+        {
+          "value": {
+            "messaging_product": "whatsapp",
+            "metadata": {
+              "display_phone_number": "15556393799",
+              "phone_number_id": "1025723653965602"
+            },
+            "contacts": [
+              {
+                "wa_id": "51920155032",
+                "user_id": "PE.967744529547245"
+              }
+            ],
+            "statuses": [
+              {
+                "id": "wamid.HBgLNTE5MjAxNTUwMzIVAgARGBIyRDk2RUUxNENDNkVENkY1MTIA",
+                "status": "sent",
+                "timestamp": "1778714434",
+                "recipient_id": "51920155032",
+                "recipient_user_id": "PE.967744529547245",
+                "pricing": {
+                  "billable": false,
+                  "pricing_model": "PMP",
+                  "category": "utility",
+                  "type": "free_customer_service"
+                }
+              }
+            ]
+          },
+          "field": "messages"
+        }
+      ]
+    }
+  ]
+}
+
+/* 
+    JSON CLIENTE PARTE 2
+*/
+
+{
+  "object": "whatsapp_business_account",
+  "entry": [
+    {
+      "id": "952399544271620",
+      "changes": [
+        {
+          "value": {
+            "messaging_product": "whatsapp",
+            "metadata": {
+              "display_phone_number": "15556393799",
+              "phone_number_id": "1025723653965602"
+            },
+            "contacts": [
+              {
+                "wa_id": "51920155032",
+                "user_id": "PE.967744529547245"
+              }
+            ],
+            "statuses": [
+              {
+                "id": "wamid.HBgLNTE5MjAxNTUwMzIVAgARGBIyRDk2RUUxNENDNkVENkY1MTIA",
+                "status": "delivered",
+                "timestamp": "1778714434",
+                "recipient_id": "51920155032",
+                "recipient_user_id": "PE.967744529547245",
+                "pricing": {
+                  "billable": false,
+                  "pricing_model": "PMP",
+                  "category": "utility",
+                  "type": "free_customer_service"
+                }
+              }
+            ]
+          },
+          "field": "messages"
+        }
+      ]
+    }
+  ]
+}

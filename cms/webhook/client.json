@@ -1,0 +1,193 @@
+/* 
+    JSON CLIENTE MENSAJE TEXTO
+*/
+
+{
+  "object": "whatsapp_business_account",
+  "entry": [
+    {
+      "id": "952399544271620",
+      "changes": [
+        {
+          "value": {
+            "messaging_product": "whatsapp",
+            "metadata": {
+              "display_phone_number": "15556393799",
+              "phone_number_id": "1025723653965602"
+            },
+            "contacts": [
+              {
+                "profile": {
+                  "name": "Carlos Polanco"
+                },
+                "wa_id": "51920155032",
+                "user_id": "PE.967744529547245"
+              }
+            ],
+            "messages": [
+              {
+                "from": "51920155032",
+                "from_user_id": "PE.967744529547245",
+                "id": "wamid.HBgLNTE5MjAxNTUwMzIVAgASGCBBQzk0NDc2QjRBMDY3MjAxQjNDQjFFMjZGRDY1NTMyNwA=",
+                "timestamp": "1778713716",
+                "text": {
+                  "body": "Hola"
+                },
+                "type": "text"
+              }
+            ]
+          },
+          "field": "messages"
+        }
+      ]
+    }
+  ]
+}
+
+/* 
+    JSON CLIENTE MENSAJE IMAGEN
+*/
+
+{
+  "object": "whatsapp_business_account",
+  "entry": [
+    {
+      "id": "952399544271620",
+      "changes": [
+        {
+          "value": {
+            "messaging_product": "whatsapp",
+            "metadata": {
+              "display_phone_number": "15556393799",
+              "phone_number_id": "1025723653965602"
+            },
+            "contacts": [
+              {
+                "profile": {
+                  "name": "Carlos Polanco"
+                },
+                "wa_id": "51920155032",
+                "user_id": "PE.967744529547245"
+              }
+            ],
+            "messages": [
+              {
+                "from": "51920155032",
+                "from_user_id": "PE.967744529547245",
+                "id": "wamid.HBgLNTE5MjAxNTUwMzIVAgASGCBBQ0FCNTM1OEM1RUM2OUU1RUM4MTc3NTEyMUFEQUU2QgA=",
+                "timestamp": "1778713738",
+                "type": "image",
+                "image": {
+                  "mime_type": "image/jpeg",
+                  "sha256": "KtumJufC1dt+QG3F2ClYVe9oBMW5Oa1tRs/KSOeNdV8=",
+                  "id": "2100244530543550",
+                  "url": "https://lookaside.fbsbx.com/whatsapp_business/attachments/?mid=2100244530543550&source=webhook&ext=1778714040&hash=ARm2SFh52r-aIKdcsUgBet3mVo09OQf4CuhRnsdDY5RgvA"
+                }
+              }
+            ]
+          },
+          "field": "messages"
+        }
+      ]
+    }
+  ]
+}
+
+/* 
+    JSON CLIENTE MENSAJE VIDEO
+*/
+
+{
+  "object": "whatsapp_business_account",
+  "entry": [
+    {
+      "id": "952399544271620",
+      "changes": [
+        {
+          "value": {
+            "messaging_product": "whatsapp",
+            "metadata": {
+              "display_phone_number": "15556393799",
+              "phone_number_id": "1025723653965602"
+            },
+            "contacts": [
+              {
+                "profile": {
+                  "name": "Carlos Polanco"
+                },
+                "wa_id": "51920155032",
+                "user_id": "PE.967744529547245"
+              }
+            ],
+            "messages": [
+              {
+                "from": "51920155032",
+                "from_user_id": "PE.967744529547245",
+                "id": "wamid.HBgLNTE5MjAxNTUwMzIVAgASGCBBQzJGNzA2NTg4MzdBNkUwRkNGMEFDOTQ5NkQ0OUM1MQA=",
+                "timestamp": "1778714266",
+                "type": "video",
+                "video": {
+                  "mime_type": "video/mp4",
+                  "sha256": "rlLyZn8Fh5XUMv7+/bX9U2N3p0bu3YK1/J/CO5yoD2U=",
+                  "id": "2111484346251447",
+                  "url": "https://lookaside.fbsbx.com/whatsapp_business/attachments/?mid=2111484346251447&source=webhook&ext=1778714567&hash=ARmwEOqrx92fGpLcr03dukp2VY67LhhHQpZtcuWj5YhYjw"
+                }
+              }
+            ]
+          },
+          "field": "messages"
+        }
+      ]
+    }
+  ]
+}
+
+/* 
+    JSON CLIENTE MENSAJE AUDIO
+*/
+
+{
+  "object": "whatsapp_business_account",
+  "entry": [
+    {
+      "id": "952399544271620",
+      "changes": [
+        {
+          "value": {
+            "messaging_product": "whatsapp",
+            "metadata": {
+              "display_phone_number": "15556393799",
+              "phone_number_id": "1025723653965602"
+            },
+            "contacts": [
+              {
+                "profile": {
+                  "name": "Carlos Polanco"
+                },
+                "wa_id": "51920155032",
+                "user_id": "PE.967744529547245"
+              }
+            ],
+            "messages": [
+              {
+                "from": "51920155032",
+                "from_user_id": "PE.967744529547245",
+                "id": "wamid.HBgLNTE5MjAxNTUwMzIVAgASGCBBQzJBQzgwM0NGMDI1QkIzRDc0MTM5OEM4QjI2NEY2QQA=",
+                "timestamp": "1778713748",
+                "type": "audio",
+                "audio": {
+                  "mime_type": "audio/ogg; codecs=opus",
+                  "sha256": "ENq2J7RcKnK3slfkt0rpCY/QvrVHlWXg75IJN8Ns2jA=",
+                  "id": "961831093513926",
+                  "url": "https://lookaside.fbsbx.com/whatsapp_business/attachments/?mid=961831093513926&source=webhook&ext=1778714050&hash=ARnqdhBvOl8EaifF56SBAr_LO_wNiwb_MROOyjUQfLCisg",
+                  "voice": true
+                }
+              }
+            ]
+          },
+          "field": "messages"
+        }
+      ]
+    }
+  ]
+}

@@ -1,5 +1,9 @@
 <?php
 
+require_once "../extensions/vendor/autoload.php";
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__.'/../../');
+$dotenv->load();
+
 require_once "../controllers/curl.controller.php";
 require_once "../controllers/template.controller.php";
 
