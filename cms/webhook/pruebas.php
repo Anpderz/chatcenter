@@ -10,6 +10,9 @@ ini_set("display_errors", 1);
 ini_set("log_errors", 1);
 ini_set("error_log", DIR."/php_error_log");
 
+date_default_timezone_set("America/Lima");
+
+
 /* =============================================
 Controladores
 =============================================*/
@@ -26,8 +29,10 @@ require_once "../controllers/bots.controller.php";
 Simulación del contenido JSON
 =============================================*/
 
-$input = '{"object":"whatsapp_business_account","entry":[{"id":"952399544271620","changes":[{"value":{"messaging_product":"whatsapp","metadata":{"display_phone_number":"15556393799","phone_number_id":"1025723653965602"},"contacts":[{"profile":{"name":"Carlos Polanco"},"wa_id":"51920155032","user_id":"PE.967744529547245"}],"messages":[{"from":"51920155032","from_user_id":"PE.967744529547245","id":"wamid.HBgLNTE5MjAxNTUwMzIVAgASGCBBQzNCNzUxQkRDOUUzNjQ1QTQxODMwQzhCOTc4MkE3OAA=","timestamp":"1778775735","text":{"body":"Hola"},"type":"text"}]},"field":"messages"}]}]}
+$input = '{"object":"whatsapp_business_account","entry":[{"id":"952399544271620","changes":[{"value":{"messaging_product":"whatsapp","metadata":{"display_phone_number":"15556393799","phone_number_id":"1025723653965602"},"contacts":[{"wa_id":"51996753410","user_id":"PE.977227911932240"}],"statuses":[{"id":"wamid.HBgLNTE5OTY3NTM0MTAVAgARGBI1N0IzMjVFREZBMkY4QjFGRjUA","status":"sent","timestamp":"1778809221","recipient_id":"51996753410","recipient_user_id":"PE.977227911932240","pricing":{"billable":false,"pricing_model":"PMP","category":"service","type":"free_customer_service"}}]},"field":"messages"}]}]}
 ';
+$data = json_decode($input);
+// echo '<pre>$data'; print_r($data); echo '</pre>';
 
 /*=============================================
 Convierte el contenido JSON a un array asociativo
@@ -44,6 +49,7 @@ Variables
 =============================================*/
 
 $type_message = null;
+$status_message = null;
 $id_whatsapp_message = null;
 $client_message = null;
 $phone_message = null;
@@ -61,9 +67,12 @@ if(isset($data->entry[0]->changes[0]->value->messages)){
 
 if(isset($data->entry[0]->changes[0]->value->statuses)){
     $type_message = "business";
+    $status_message = $data->entry[0]->changes[0]->value->statuses[0]->status;
 }
 
-echo '<pre>'; print_r($type_message); echo '</pre>';
+// echo '<pre>$type_message '; print_r($type_message); echo '</pre>';
+// echo '<pre>$status_message '; print_r($status_message); echo '</pre>';
+
 
 /*=============================================
 Capturar la API Clound
@@ -81,7 +90,7 @@ if($getApiWS->status == 200){
     $id_whatsapp_message = $getApiWS->id_whatsapp;
 }
 
-echo '<pre>$id_whatsapp_message '; print_r($id_whatsapp_message); echo '</pre>';
+// echo '<pre>$id_whatsapp_message '; print_r($id_whatsapp_message); echo '</pre>';
 
 /*=============================================
 Capturar mensaje del cliente
@@ -197,3 +206,69 @@ if($type_message == "client"){
 
     }
 }
+
+/*=============================================
+Capturar mensaje del negocio
+=============================================*/
+if ($type_message == "business" && $status_message == "sent") {
+    /*=============================================
+    Capturar el número de teléfono
+    =============================================*/
+
+    $phone_message = $data->entry[0]->changes[0]->value->statuses[0]->recipient_id;
+    echo '<pre>$phone_message '; print_r($phone_message); echo '</pre>';
+
+    /*=============================================
+    Capturando el ID de la conversación
+    =============================================*/
+    
+    $idConversation = isset($data->entry[0]->changes[0]->value->statuses[0]->conversation->id)
+        ? $data->entry[0]->changes[0]->value->statuses[0]->conversation->id
+        : null;
+    echo '<pre>$idConversation '; print_r($idConversation); echo '</pre>';
+
+    /*=============================================
+    Capturar fecha de vencimiento del mensaje
+    =============================================*/
+
+    $expireConversation = isset($data->entry[0]->changes[0]->value->statuses[0]->conversation->expiration_timestamp)
+        ? $data->entry[0]->changes[0]->value->statuses[0]->conversation->expiration_timestamp
+        : null;
+    $expireConversation = $expireConversation ? (new DateTime("@$expireConversation"))->format('Y-m-d H:i:s') : null;
+    echo '<pre>$expireConversation '; print_r($expireConversation); echo '</pre>';
+
+    /*=============================================
+    Traer la últma respuesta del negocio
+    =============================================*/
+
+    $url = "messages?linkTo=phone_message&equalTo=".$phone_message."&orderBy=id_message&orderMode=DESC&startAt=0&endAt=10";
+
+    $method = "GET";
+    $fields = array();
+
+    $getMessage = CurlController::request($url, $method, $fields);
+
+    if ($getMessage && $getMessage->status == 200) {
+        $businessMsg = null;
+        foreach ($getMessage->results as $msg) {
+            if ($msg->type_message == "business") { $businessMsg = $msg; break; }
+        }
+        $getMessage = $businessMsg;
+        /*=============================================
+        Actualizar última respuesta del negocio
+        =============================================*/
+
+        if (!$getMessage) { echo "No hay mensaje business para este teléfono"; return; }
+        $url = "messages?id=".$getMessage->id_message."&nameId=id_message&token=no&except=id_message";
+        $method = "PUT";
+        $fields = array(
+            "id_conversation_message" => $idConversation,
+            "expiration_message"      => $expireConversation);
+
+        $fields= http_build_query($fields);
+        $updateMessage = CurlController::request($url, $method, $fields);
+        if ($updateMessage && $updateMessage->status == 200) {
+            echo "todo Ok";
+
+
+    } }}

@@ -447,6 +447,7 @@ if($adminTable->status == 404){
 	<script src="/views/assets/js/dynamic-forms/dynamic-forms.js"></script>
 	<script src="/views/assets/js/dynamic-tables/dynamic-tables.js"></script>
 	<script src="/views/assets/js/fms/fms.js"></script>
+	<script src="/views/assets/js/chat/chat.js"></script>
 		
 	<?php endif ?>
 

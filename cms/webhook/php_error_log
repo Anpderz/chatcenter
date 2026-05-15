@@ -1,0 +1,39 @@
+[15-May-2026 01:55:01 UTC] PHP Warning:  Undefined property: stdClass::$conversation in /srv/http/chatcenter/cms/webhook/pruebas.php on line 216
+[15-May-2026 01:55:01 UTC] PHP Warning:  Attempt to read property "id" on null in /srv/http/chatcenter/cms/webhook/pruebas.php on line 216
+[15-May-2026 01:55:01 UTC] PHP Warning:  Undefined property: stdClass::$conversation in /srv/http/chatcenter/cms/webhook/pruebas.php on line 222
+[15-May-2026 01:55:01 UTC] PHP Warning:  Attempt to read property "expiration_timestamp" on null in /srv/http/chatcenter/cms/webhook/pruebas.php on line 222
+[15-May-2026 02:33:47 UTC] PHP Fatal error:  Uncaught DateMalformedStringException: Failed to parse time string (@) at position 0 (@): Unexpected character in /srv/http/chatcenter/cms/webhook/pruebas.php:234
+Stack trace:
+#0 /srv/http/chatcenter/cms/webhook/pruebas.php(234): DateTime->__construct()
+#1 {main}
+  thrown in /srv/http/chatcenter/cms/webhook/pruebas.php on line 234
+[15-May-2026 02:37:42 UTC] PHP Fatal error:  Uncaught DateMalformedStringException: Failed to parse time string (@) at position 0 (@): Unexpected character in /srv/http/chatcenter/cms/webhook/pruebas.php:234
+Stack trace:
+#0 /srv/http/chatcenter/cms/webhook/pruebas.php(234): DateTime->__construct()
+#1 {main}
+  thrown in /srv/http/chatcenter/cms/webhook/pruebas.php on line 234
+[15-May-2026 02:39:52 UTC] PHP Fatal error:  Uncaught Error: Call to a member function format() on null in /srv/http/chatcenter/cms/webhook/pruebas.php:235
+Stack trace:
+#0 {main}
+  thrown in /srv/http/chatcenter/cms/webhook/pruebas.php on line 235
+[14-May-2026 21:42:37 America/Lima] PHP Fatal error:  Uncaught Error: Call to a member function format() on null in /srv/http/chatcenter/cms/webhook/pruebas.php:238
+Stack trace:
+#0 {main}
+  thrown in /srv/http/chatcenter/cms/webhook/pruebas.php on line 238
+[14-May-2026 21:44:49 America/Lima] PHP Fatal error:  Uncaught Error: Call to a member function format() on null in /srv/http/chatcenter/cms/webhook/pruebas.php:238
+Stack trace:
+#0 {main}
+  thrown in /srv/http/chatcenter/cms/webhook/pruebas.php on line 238
+[14-May-2026 21:45:11 America/Lima] PHP Fatal error:  Uncaught Error: Call to a member function format() on null in /srv/http/chatcenter/cms/webhook/pruebas.php:238
+Stack trace:
+#0 {main}
+  thrown in /srv/http/chatcenter/cms/webhook/pruebas.php on line 238
+[14-May-2026 21:45:11 America/Lima] PHP Fatal error:  Uncaught Error: Call to a member function format() on null in /srv/http/chatcenter/cms/webhook/pruebas.php:238
+Stack trace:
+#0 {main}
+  thrown in /srv/http/chatcenter/cms/webhook/pruebas.php on line 238
+[14-May-2026 21:45:12 America/Lima] PHP Fatal error:  Uncaught Error: Call to a member function format() on null in /srv/http/chatcenter/cms/webhook/pruebas.php:238
+Stack trace:
+#0 {main}
+  thrown in /srv/http/chatcenter/cms/webhook/pruebas.php on line 238
+[14-May-2026 21:52:25 America/Lima] PHP Warning:  Attempt to read property "status" on null in /srv/http/chatcenter/cms/webhook/pruebas.php on line 265
