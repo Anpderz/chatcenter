@@ -2,8 +2,7 @@
 
 $limitContact = 10;
 $limitMessage = 10;
-$contacts = array();
-$messages  = array();
+$lastIdMessage = 0;
 
 /*=============================================
 Traemos los contactos
@@ -33,11 +32,20 @@ if ($getContacts->status == 200) {
 
     if ($getMessages->status == 200) {
         $messages = $getMessages->results;
+        $lastIdMessage = $messages[0]->id_message;
+    } else {
+        $messages = array();
+        
+    }} else {
+    $contacts = array();
     }
 
-}
+
 ?>
+
 <div class="container-fluid p-0">
+    <audio id="chatSound" src="http://cms-chatcenter.com/views/assets/files/6a0e811c7342b52.mp3" preload="auto"></audio>
+    <audio id="messageSound" src="http://cms-chatcenter.com/views/assets/files/6a0e7e9b65ef011.mp3" preload="auto"></audio>
   <div class="main-container">
     <?php
     include "modules/chat-container/chat-container.php";
@@ -45,3 +53,4 @@ if ($getContacts->status == 200) {
     ?>
   </div>
 </div>
+	<script src="/views/assets/js/chat/chat.js"></script>

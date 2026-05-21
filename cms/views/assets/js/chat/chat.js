@@ -1,103 +1,228 @@
-/*==============================================
-Revisar si hay mensajes nuevos en el chat
-==============================================*/
+/*=============================================
+Desbloquear audio en el primer click del usuario
+=============================================*/
 
-var intervalChat = setInterval(function() {
-    var phoneMessage = $("#phoneMessage").val();
-    var orderMessage = $("#orderMessage").val();
+$(document).one("click", function(){
 
-    if (phoneMessage && orderMessage) {
-        intervalMessage(phoneMessage, orderMessage);
-    }
-}, 2000);
+	["#chatSound","#messageSound"].forEach(function(id){
+		var el = $(id)[0];
+		if(el && el.src) el.play().then(function(){ el.pause(); el.currentTime = 0; }).catch(function(){});
+	});
 
-/*==============================================
-Revisar si hay mensajes nuevos en el chat
-==============================================*/
+});
 
-function intervalMessage(phoneMessage, orderMessage) {
-    var data = new FormData();
-    data.append("phone_message", phoneMessage);
-    data.append("order_message", orderMessage);
+/*=============================================
+Mover el scroll hasta la última conversación
+=============================================*/
 
-    $.ajax({
-        url: "/ajax/chat.ajax.php",
-        method: "POST",
-        data: data,
-        cache: false,
-        contentType: false,
-        processData: false,
-        success: function(response) {
-            if (response != "") {
-                var parsed = JSON.parse("[" + response + "]");
-                $("#chatBody").append(decodeURIComponent(escape(atob(parsed[0].message))));
-                $("#orderMessage").val(parsed[0].lastOrder);
-                intervalMessage($("#phoneMessage").val(), parsed[0].lastOrder);
-            }
-        }
-    });
+function scrollMoveToEnd(){
+
+	$(document).ready(function() {
+
+		var messages = $(".msg:last");
+
+		if(messages.length > 0){
+
+			$("html, body, #chatBody").animate({
+
+				scrollTop: $("#chatBody")[0].scrollHeight
+
+			},500);
+
+		}
+
+	})
+
 }
 
-/*==============================================
-Respondiendo chat manualmente desde el botón
-==============================================*/
+scrollMoveToEnd();
 
-$(document).on("click", ".send", function() {
-    var conversation = $('#userInput').val();
-    sendMessage(conversation);
-}) 
+/*=============================================
+Revisar si hay mensajes nuevos en el chat
+=============================================*/
 
-/*==============================================
-Respondiendo chat manualmente desde el botón
-==============================================*/
+var interval = setInterval(function(){
 
-$("#userInput").keyup(function(event) {
-    event.preventDefault();
-    if (event.keyCode === 13 && $("#userInput").val() != "") {
-        var conversation = $('#userInput').val();
-        sendMessage(conversation);
-    }
+	var phoneMessage = $("#phoneMessage").val();
+	var orderMessage = $("#orderMessage").val();
+
+	if(phoneMessage != undefined && orderMessage != undefined){
+
+		intervalMessage(phoneMessage, orderMessage);
+	}
+
+	/*=============================================
+	Función para identificar nuevos chats
+	=============================================*/
+
+	intervalChat();
+
+}, 2000);
+
+/*=============================================
+Función si hay mensajes nuevos en el chat
+=============================================*/
+
+function intervalMessage(phoneMessage, orderMessage){
+
+	var data = new FormData();
+	data.append("phoneMessage", phoneMessage);
+	data.append("orderMessage", orderMessage);
+
+	$.ajax({
+		url: "/ajax/chat.ajax.php",
+		method: "POST",
+		data: data,
+		contentType: false,
+		cache: false,
+		processData: false,
+		success: function (response){
+
+			// console.log("response", response);
+
+			if(response != ""){
+
+				// console.log("response", response);
+
+				var response = JSON.parse("["+response+"]");
+
+				$("#chatBody").append(decodeURIComponent(escape(atob(response[0].message))));
+				$("#orderMessage").val(response[0].lastOrder);
+
+				/*=============================================
+				Sonido cuando el cliente escribe un nuevo mensaje en el chat actual
+				=============================================*/
+
+				if(response[0].type == "client" && $("#messageSound").attr("src")){
+
+					$("#messageSound")[0].play().catch(function(){});
+
+				}
+
+				scrollMoveToEnd();
+
+			}
+
+		}
+
+	})
+
+}
+
+/*=============================================
+Respondiendo Chat Manualmente desde el botón
+=============================================*/
+
+$(document).on("click", ".send", function(){
+
+	var conversation = $("#userInput").val();
+
+	sendMessage(conversation);
+
 })
-/*==============================================
-Funcion para enviar la conversación
-==============================================*/
-function sendMessage(conversation) {
 
-    var phoneMessage = $("#phoneMessage").val();
-    var token = localStorage.getItem("tokenAdmin");
+/*=============================================
+Respondiendo Chat Manualmente con Enter
+=============================================*/
 
-    if (!phoneMessage || !token) {
-        console.error("Falta phone o token:", phoneMessage, token);
-        return;
-    }
+$("#userInput").keyup(function(event){
 
-    $("#userInput").val("");
+	event.preventDefault();
 
-    var data = new FormData();
-    data.append("conversation", conversation);
-    data.append("phone", phoneMessage);
-    data.append("token", token);
+	if(event.keyCode == 13 && $("#userInput").val() != ""){
 
-    $.ajax({
-        url: "/ajax/chat.ajax.php",
-        method: "POST",
-        data: data,
-        cache: false,
-        contentType: false,
-        processData: false,
-        success: function(response) {
-            console.log("sendMessage response:", response);
-            if (response != "") {
-                var parsed = JSON.parse("[" + response + "]");
-                if (parsed[0].status == "ok") {
-                    var time = new Date().toLocaleTimeString("es-PE", { hour: "2-digit", minute: "2-digit" });
-                    var html = '<div class="msg bot"> ' + conversation + ' <br><span class="small text-muted float-end mt-2">' + time + '</span></div>';
-                    $("#chatBody").append(html);
-                    var newOrder = parseInt($("#orderMessage").val()) + 1;
-                    $("#orderMessage").val(newOrder);
-                    $(".contact-list a[href*=\"" + phoneMessage + "\"] p.small").text("...");
-                }
-            }
-        }
-    });
+		var conversation = $("#userInput").val();
+
+		sendMessage(conversation);
+	}
+
+})
+
+/*=============================================
+Función para enviar la conversación
+=============================================*/
+
+function sendMessage(conversation){
+
+	suppressChatSound = true;
+
+	$("#userInput").val("");
+
+	var data = new FormData();
+	data.append("conversation", conversation);
+	data.append("phone", $("#phoneMessage").val());
+	data.append("token", localStorage.getItem("tokenAdmin"));
+
+	$.ajax({
+		url: "/ajax/chat.ajax.php",
+		method: "POST",
+		data: data,
+		contentType: false,
+		cache: false,
+		processData: false,
+		success: function (response){
+
+			// console.log("response", response);
+		}
+
+	})
+
+}
+
+/*=============================================
+Función para identificar nuevos chats
+=============================================*/
+
+var firstChatInterval = true;
+var suppressChatSound = false;
+
+function intervalChat(){
+
+	var data = new FormData();
+	data.append("lastIdMessage", $("#lastIdMessage").attr("lastIdMessage"));
+	data.append("phone", $("#phoneMessage").val());
+	data.append("borderChat", $("#borderChat").val());
+
+	$.ajax({
+		url: "/ajax/chat.ajax.php",
+		method: "POST",
+		data: data,
+		contentType: false,
+		cache: false,
+		processData: false,
+		success: function (response){
+
+			if(response != ""){
+
+				$("#lastIdMessage").html('');
+
+				// console.log("response", response);
+
+				var response = JSON.parse("["+response.slice(0,-1)+"]");
+
+				$("#lastIdMessage").attr("lastIdMessage", response[0].lastIdMessage);
+
+				/*=============================================
+				Sonido cuando el cliente tiene una conversación nueva
+				=============================================*/
+
+				if(!firstChatInterval && !suppressChatSound && response[0].phone != $("#phoneMessage").val() && $("#chatSound").attr("src")){
+
+					$("#chatSound")[0].play().catch(function(){});
+				}
+
+				firstChatInterval = false;
+				suppressChatSound = false;
+
+				response.forEach((e,i) => {
+
+					$("#lastIdMessage").append(decodeURIComponent(escape(atob(e.chats))));
+
+				})
+
+			}
+		}
+
+	})
+
 }
