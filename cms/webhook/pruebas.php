@@ -29,11 +29,10 @@ require_once "../controllers/bots.controller.php";
 Simulación del contenido JSON
 =============================================*/
 
-$input = '{"object":"whatsapp_business_account","entry":[{"id":"952399544271620","changes":[{"value":{"messaging_product":"whatsapp","metadata":{"display_phone_number":"15556393799","phone_number_id":"1025723653965602"},"contacts":[{"wa_id":"51996753410","user_id":"PE.977227911932240"}],"statuses":[{"id":"wamid.HBgLNTE5OTY3NTM0MTAVAgARGBI1N0IzMjVFREZBMkY4QjFGRjUA","status":"sent","timestamp":"1778809221","recipient_id":"51996753410","recipient_user_id":"PE.977227911932240","pricing":{"billable":false,"pricing_model":"PMP","category":"service","type":"free_customer_service"}}]},"field":"messages"}]}]}
+$input = '{"object":"whatsapp_business_account","entry":[{"id":"952399544271620","changes":[{"value":{"messaging_product":"whatsapp","metadata":{"display_phone_number":"15556393799","phone_number_id":"1025723653965602"},"contacts":[{"profile":{"name":"Carlos Polanco"},"wa_id":"51920155032","user_id":"PE.967744529547245"}],"messages":[{"context":{"from":"15556393799","id":"wamid.HBgLNTE5MjAxNTUwMzIVAgARGBI0QjVDMTkxREUyRkMwNTY4ODAA"},"from":"51920155032","from_user_id":"PE.967744529547245","id":"wamid.HBgLNTE5MjAxNTUwMzIVAgASGCBBQ0NBRkU5M0ZGNEVEQTc3MEU4MUNFNEE2NkNBMDQ0QQA=","timestamp":"1779667525","type":"interactive","interactive":{"type":"button_reply","button_reply":{"id":"1","title":"Contactar con un ase"}}}]},"field":"messages"}]}]}
 ';
 $data = json_decode($input);
-// echo '<pre>$data'; print_r($data); echo '</pre>';
-
+echo '<pre>$data'; print_r($data); echo '</pre>';
 /*=============================================
 Convierte el contenido JSON a un array asociativo
 =============================================*/
@@ -55,6 +54,7 @@ $client_message = null;
 $phone_message = null;
 $order_message = 0;
 $type_conversation = null;
+$template_message = null;
 
 
 /*=============================================
@@ -88,9 +88,20 @@ if($getApiWS->status == 200){
 
     $getApiWS = $getApiWS->results[0];
     $id_whatsapp_message = $getApiWS->id_whatsapp;
+
+} else {
+
+    // Fallback para pruebas cuando el phone_number_id no está en la BD
+    $getApiWS = (object)[
+        'id_whatsapp'              => 1,
+        'ai_whatsapp'              => 0,
+        'token_whatsapp'           => 'TEST_TOKEN',
+        'phone_number_id_whatsapp' => $data->entry[0]->changes[0]->value->metadata->phone_number_id,
+    ];
+    $id_whatsapp_message = $getApiWS->id_whatsapp;
 }
 
-// echo '<pre>$id_whatsapp_message '; print_r($id_whatsapp_message); echo '</pre>';
+echo '<pre>$id_whatsapp_message '; print_r($id_whatsapp_message); echo '</pre>';
 
 /*=============================================
 Capturar mensaje del cliente
@@ -159,10 +170,25 @@ if($type_message == "client"){
     $type_conversation = "document";
     }
 
-    echo '<pre>$client_message '; print_r($client_message); echo '</pre>';
+ 
+     /*=============================================
+    Capturar respuesta interactiva
+    =============================================*/
+
+    if(isset($data->entry[0]->changes[0]->value->messages[0]->interactive)){
+            $type_conversation = "interactive";
+
+            if(isset($data->entry[0]->changes[0]->value->messages[0]->interactive->button_reply)){
+            $client_message = '{"id": "'.$data->entry[0]->changes[0]->value->messages[0]->interactive->button_reply->id.'", "text": "'.$data->entry[0]->changes[0]->value->messages[0]->interactive->button_reply->title.'"}';
+    }}
+
+
+
+
+
+
+   echo '<pre>$client_message '; print_r($client_message); echo '</pre>';
     echo '<pre>$phone_message '; print_r($phone_message); echo '</pre>';
-
-
     /*=============================================
     Capturar el orden del mensaje
     =============================================*/
@@ -174,7 +200,9 @@ if($type_message == "client"){
     if($getMessages->status == 200){
 
         $order_message = $getMessages->results[0]->order_message + 1;
-    }
+        $template_message = $getMessages->results[0]->template_message;
+        
+        }
 
 
     /* =============================================
@@ -187,6 +215,7 @@ if($type_message == "client"){
         "id_whatsapp_message" => $id_whatsapp_message,
         "client_message" => $client_message,
         "phone_message" => $phone_message,
+        "template_message" => $template_message,
         "order_message" => $order_message,
         "date_created_message" => date("Y-m-d"),
     );

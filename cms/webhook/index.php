@@ -171,12 +171,18 @@ Capturar mensaje del cliente
             $type_conversation = "document";
         }
 
-        echo '<pre>$client_message ';
-        print_r($client_message);
-        echo '</pre>';
-        echo '<pre>$phone_message ';
-        print_r($phone_message);
-        echo '</pre>';
+        /*=============================================
+    Capturando respuesta interactiva (botones)
+    =============================================*/
+        if (isset($data->entry[0]->changes[0]->value->messages[0]->interactive)) {
+            $type_conversation = "interactive";
+            if (isset($data->entry[0]->changes[0]->value->messages[0]->interactive->button_reply)) {
+                $client_message = '{"id":"' . $data->entry[0]->changes[0]->value->messages[0]->interactive->button_reply->id . '","text":"' . $data->entry[0]->changes[0]->value->messages[0]->interactive->button_reply->title . '"}';
+            }
+            if (isset($data->entry[0]->changes[0]->value->messages[0]->interactive->list_reply)) {
+                $client_message = '{"id":"' . $data->entry[0]->changes[0]->value->messages[0]->interactive->list_reply->id . '","text":"' . $data->entry[0]->changes[0]->value->messages[0]->interactive->list_reply->title . '"}';
+            }
+        }
 
 
         /*=============================================
@@ -290,10 +296,10 @@ Capturar mensaje del negocio
             }
             $url = "messages?id=" . $getMessage->id_message . "&nameId=id_message&token=no&except=id_message";
             $method = "PUT";
-            $fields = array(
+            $fields = array_filter([
                 "id_conversation_message" => $idConversation,
                 "expiration_message"      => $expireConversation
-            );
+            ]);
 
             $fields = http_build_query($fields);
             $updateMessage = CurlController::request($url, $method, $fields);

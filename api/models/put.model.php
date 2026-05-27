@@ -27,12 +27,14 @@ class PutModel{
 		Actualizamos registros
 		=============================================*/
 
+		if(empty($data)) return null;
+
 		$set = "";
 
 		foreach ($data as $key => $value) {
-			
+
 			$set .= $key." = :".$key.",";
-			
+
 		}
 
 		$set = substr($set, 0, -1);

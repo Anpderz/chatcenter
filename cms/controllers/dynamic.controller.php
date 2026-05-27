@@ -67,12 +67,19 @@ class DynamicController{
 									fncMatPreloader("off");
 									fncFormatInputs();
 								    fncSweetAlert("success","El registro ha sido actualizado con éxito", setTimeout(()=>window.location="/'.$module->url_page.'",1000));
-									
+
 
 								</script>
 
 							';
-							
+
+						}else{
+
+							echo '<script>
+								fncMatPreloader("off");
+								fncSweetAlert("error","Error al actualizar el registro (status: '.($update->status ?? 'null').')", "");
+							</script>';
+
 						}
 					}
 				
@@ -95,13 +102,10 @@ class DynamicController{
 					if($value->type_column == "password"){
 
 						$fields[$value->title_column] = crypt(trim($_POST[$value->title_column]),'$2a$07$azybxcags23425sdg23sdfhsd$');
-					
-					}else if($value->type_column == "email"){
+
+					}else{
 
 						$fields[$value->title_column] = trim($_POST[$value->title_column]);
-					}else{
-					
-						$fields[$value->title_column] = urlencode(trim($_POST[$value->title_column]));
 
 					}
 					
@@ -122,12 +126,19 @@ class DynamicController{
 									fncMatPreloader("off");
 									fncFormatInputs();
 								    fncSweetAlert("success","El registro ha sido guardado con éxito", setTimeout(()=>window.location="/'.$module->url_page.'",1000));
-									
+
 
 								</script>
 
 							';
-							
+
+						}else{
+
+							echo '<script>
+								fncMatPreloader("off");
+								fncSweetAlert("error","Error al guardar el registro (status: '.($save->status ?? 'null').')", "");
+							</script>';
+
 						}
 					}
 				
